@@ -35,7 +35,7 @@ public class PauseMenu : MonoBehaviour
         SwitchButtonState(restartButton, true);
         SwitchButtonState(backButton, true);
         SwitchButtonState(exitButton, true);
-
+        Time.timeScale = 0;
         EventSystem.current.SetSelectedGameObject(backButton.gameObject);
     }
 
@@ -46,7 +46,7 @@ public class PauseMenu : MonoBehaviour
         SwitchButtonState(restartButton, false);
         SwitchButtonState(backButton, false);
         SwitchButtonState(exitButton, false);
-
+        Time.timeScale = 1;
         EventSystem.current.SetSelectedGameObject(null);
     }
 

@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.4964127, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44658017, g: 0.49641502, b: 0.57482153, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -185,8 +185,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9.1, y: 143}
-  m_SizeDelta: {x: 160, y: 40}
+  m_AnchoredPosition: {x: 3.5, y: -94}
+  m_SizeDelta: {x: 329.7, y: 82.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &306736489
 MonoBehaviour:
@@ -220,7 +220,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Title
+  m_Text: "Press Enter \nto start the game"
 --- !u!222 &306736490
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -482,7 +482,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 196de1a8283aa6f4db495a8331fe7a54, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.15
+  m_Volume: 0.44
   m_Pitch: 1
   Loop: 0
   Mute: 0
