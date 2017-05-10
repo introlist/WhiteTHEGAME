@@ -429,7 +429,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c2ec748c99cb2341b437fef1c198426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Intro
+  cinem: {fileID: 1148354191}
+  tutos: {fileID: 261837294}
 --- !u!1 &460716756
 GameObject:
   m_ObjectHideFlags: 0
