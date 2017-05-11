@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Boss
   - Enemy
+  - Obstacle
+  - Food
+  - Enemy2
   layers:
   - Default
   - TransparentFX
@@ -40,6 +43,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1355250525
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

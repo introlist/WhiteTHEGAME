@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class Parpadeo : MonoBehaviour
 {
-
+    public string tecla;
     Text flashingText;
 
     void Start()
@@ -27,7 +27,7 @@ public class Parpadeo : MonoBehaviour
             //display blank text for 0.5 seconds
             yield return new WaitForSeconds(1.5f);
             //display “I AM FLASHING TEXT” for the next 0.5 seconds
-            flashingText.text = "Presiona ENTER para empezar";
+            flashingText.text = "Presiona "+tecla+" para empezar";
             yield return new WaitForSeconds(1.5f);
         }
     }

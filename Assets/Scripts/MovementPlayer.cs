@@ -31,7 +31,7 @@ public class MovementPlayer : MonoBehaviour
     {
         nextLevelExp = lvlRatio;
         Time.timeScale = 1;
-        actualSpeed = 0;
+        actualSpeed = normalSpeed / 5;
         fastSpeed = normalSpeed + 2;
         animator = this.GetComponent<Animator>();
         animator.SetInteger("Emocion", 0);
@@ -46,7 +46,7 @@ public class MovementPlayer : MonoBehaviour
 
         vidaUI.text = "Life: " + vida + "/" + MAXvida ;
         energiaUI.text = "Energy: " + energy + "/" + MAXenergy;
-        if (vida == 0)
+        if (vida <= 0)
         {
             this.gameObject.SetActive(false);
             Time.timeScale = 0;
@@ -69,23 +69,29 @@ public class MovementPlayer : MonoBehaviour
 
     private void moveChar()
     {
-        if (!takeoffed)
+        
+       if(!takeoffed)
         {
-
+            
+            Debug.Log("speeding");
             status = 0;
-            animator.SetInteger("Emocion", status);
-            actualSpeed += 1.0f * Time.deltaTime;
+            
+            actualSpeed += 2.0f * Time.deltaTime;
 
             if ((actualSpeed) >= (normalSpeed))
             {
                 actualSpeed = normalSpeed;
                 takeoffed = true;
             }
-            
+
+            animator.SetInteger("Emocion", status);
         }
+
+
+        else { 
         if (Input.GetKeyDown(KeyCode.UpArrow) && posi < 1)
         {
-            MoveY(+0.8f);
+            MoveY(0.8f);
             posi += 1;
         }
 
@@ -95,14 +101,15 @@ public class MovementPlayer : MonoBehaviour
             MoveY(-0.8f);
             posi -= 1;
         }
-        if (Input.GetKeyDown(KeyCode.X) && Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.X) && Input.GetKeyDown(KeyCode.P) && Input.GetKeyDown(KeyCode.LeftShift))
         {
-            exp = exp + 60;
+            exp = exp + (int)nextLevelExp/2;
+            Debug.Log("XP CHEAT: +"+(int)nextLevelExp / 2+"XP");
             checkLVL();
         }
 
 
-        if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && energy > 7)
+        if ((Input.GetKey(KeyCode.Space)) && energy > 7)
         {
             cooldown = 0;
             status = 2;
@@ -123,10 +130,10 @@ public class MovementPlayer : MonoBehaviour
                 status = 1;
             }
             actualSpeed = normalSpeed;
-            if ((cooldown) > 75 && ((cooldown % 6) == 1) && (energy < MAXenergy))
+            if ((cooldown) > 75 && ((cooldown % 6) == 1) && (energy < MAXenergy) && (Time.timeScale > 0))
             {
               //  Debug.Log(cooldown);
-                energy+=2;
+                energy+= (2*(int)Time.timeScale) + lvl;
                 if(energy > MAXenergy)
                 {
                     energy = MAXenergy;
@@ -137,13 +144,40 @@ public class MovementPlayer : MonoBehaviour
 
 
         }
-        animator.SetInteger("Emocion", status);
+        
         transform.Translate(Vector2.right * actualSpeed * Time.deltaTime);
+
+         } 
+        animator.SetInteger("Emocion", status);
     }
 
     void MoveY(float n)
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y + n, transform.position.z);
+        float i = transform.position.y + n;
+        Vector2 going = new Vector2(transform.position.x, i);
+       // Debug.Log(going.x + " and Y " + going.y);
+        if (n > 0)
+        {
+            while (transform.position.y < i)
+            {
+                transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), going , 0.001f * Time.deltaTime);
+            }
+            if (transform.position.y > i)
+                transform.position = new Vector2(transform.position.x, i);
+        }
+        if (n < 0)
+        {
+            while (transform.position.y > i)
+            {
+                transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), going, 0.001f * Time.deltaTime);
+            }
+            if (transform.position.y < i)
+                transform.position = new Vector2(transform.position.x, i);
+        }
+
+
+
+
     }
 
 
@@ -156,36 +190,49 @@ public class MovementPlayer : MonoBehaviour
         }
         if (collision.gameObject.tag == "Finish")
         {
+            Time.timeScale = 0;
             gameStatus.color = Color.white;
             gameStatus.text = "YOU WIN";
-            Time.timeScale = 0;
-            expUI.text = "EXP: " + exp;
+            expUI.text = "LVL: " + lvl + " + EXP: " + exp;
+
         }
         if (collision.gameObject.tag == "Enemy")
         {
             status = 3;
             StartCoroutine(hurt());
-            vida = vida - 10;
+            vida = vida - ((int)MAXvida/5 ) + 1;
             if (vida > 0)
             {
                 Destroy(collision.gameObject);
-                int addXP = (lvl * (int)Mathf.Floor(lvlRatio / 4));
+                int addXP = (lvl * (int)Mathf.Floor(lvlRatio / 5));
                 exp = exp + addXP;
                 //Debug.Log("+XP: " + addXP);
                 checkLVL();
             }
 
         }
+
+        if (collision.gameObject.tag == "Obstacle")
+        {
+            takeoffed = false;
+            actualSpeed = normalSpeed / 5;
+        }
+        if (collision.gameObject.tag == "Food")
+        {
+            Destroy(collision.gameObject);
+            vida = vida + MAXvida / 3;
+            if (vida > MAXvida)
+            {
+                vida = MAXvida;
+            }
+            energy = MAXenergy;
+        }
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-       
-        if (collision.gameObject.tag == "Obstacle")
-        {
-            takeoffed = false;
-        }
-       
+    
 
     }
 
@@ -198,7 +245,7 @@ public class MovementPlayer : MonoBehaviour
             nextLevelExp = (int)(Mathf.Pow(lvl, 1.06f) * 120);
             MAXenergy = MAXenergy + (( (int)Mathf.Log(lvl+1)) * 35);
             Debug.Log("MAXENERGY + "+ (((int)Mathf.Log(lvl+1)) * 35));
-            MAXvida = MAXvida + ((lvl + (int)Mathf.Log(lvl)) * 5);
+            MAXvida = MAXvida + ((lvl + (int)Mathf.Log(lvl)) * 15);
             vida = MAXvida;
         }
     }

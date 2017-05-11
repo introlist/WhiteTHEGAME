@@ -9,39 +9,73 @@ public class StartMenu : MonoBehaviour
     public Toggle tutos;
     string sceneName;
 
+
     void Start ()
 	{
-	
+        if (PlayerPrefs.GetInt("IntroOnOff") == 1)
+        {
+            cinem.isOn = true;
+        }
+        if (PlayerPrefs.GetInt("IntroOnOff") == 0)
+        {
+            cinem.isOn = false;
+        }
+        if (PlayerPrefs.GetInt("Tutos") == 1)
+        {
+            tutos.isOn = true;
+        }
+        if (PlayerPrefs.GetInt("Tutos") == 0)
+        {
+            tutos.isOn = false;
+        }
+        cinem.onValueChanged.AddListener(checkIntros);
+        tutos.onValueChanged.AddListener(checkTutos);
 	}
 	
 	void Update ()
 	{
 
-        if (tutos.isOn)
+       
+        if (Input.GetKey(KeyCode.Escape))
         {
-            PlayerPrefs.SetInt("Tutos", 1);
-           // Debug.Log("Hey");
-        }else
-        {
-            PlayerPrefs.SetInt("Tutos", 0);
-           // Debug.Log("Listen");
+           if( PlayerPrefs.GetInt("IntroOnOff") == 1)
+            {
+                SceneManager.LoadScene("Intro");
+            }
+            if (PlayerPrefs.GetInt("IntroOnOff") == 0)
+            {
+                SceneManager.LoadScene("Game");
+             }
         }
 
-        if (cinem.isOn)
+
+    }
+
+    private void checkIntros(bool boolean)
+    {
+        if (boolean == true)
         {
-            sceneName = "Intro";
-            //Debug.Log("YOLO");
+            PlayerPrefs.SetInt("IntroOnOff", 1);
+           // Debug.Log("IntroOnOff = " + PlayerPrefs.GetInt("IntroOnOff"));
+            
         }
         else
         {
-            sceneName = "Game";
-            //Debug.Log("SWAG");
+            PlayerPrefs.SetInt("IntroOnOff", 0);
+           // Debug.Log("IntroOnOff = " + PlayerPrefs.GetInt("IntroOnOff"));
         }
-        if (Input.GetButton("Submit"))
+    }
+
+    private void checkTutos(bool boolean) { 
+                  if (tutos.isOn)
         {
-            SceneManager.LoadScene(sceneName);
+            PlayerPrefs.SetInt("Tutos", 1);
+            // Debug.Log("Hey");
         }
-
-
+        else
+        {
+            PlayerPrefs.SetInt("Tutos", 0);
+            // Debug.Log("Listen");
+        }
     }
 }

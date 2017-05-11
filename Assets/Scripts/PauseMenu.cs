@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -10,16 +11,20 @@ public class PauseMenu : MonoBehaviour
     private Button restartButton;
     private Button backButton;
     private Button exitButton;
+    float tmSc = 0;
+
 
 
 	void Start ()
     {
+
         // The UI elements of the menu
         pauseLabel = GameObject.Find("PauseLabel").GetComponent<Text>();
         pausePanel = GameObject.Find("PausePanel").GetComponent<Image>();
         restartButton = GameObject.Find("RestartButton").GetComponent<Button>();
         backButton = GameObject.Find("BackButton").GetComponent<Button>();
         exitButton = GameObject.Find("ExitButton").GetComponent<Button>();
+        exitButton.onClick.AddListener(irMenuPrinc);
 
         pauseLabel.enabled = false;
         pausePanel.enabled = false;
@@ -30,6 +35,7 @@ public class PauseMenu : MonoBehaviour
 
     public void showMenu ()
     {
+        tmSc = Time.timeScale;
         pauseLabel.enabled = true;
         pausePanel.enabled = true;
         SwitchButtonState(restartButton, true);
@@ -46,7 +52,9 @@ public class PauseMenu : MonoBehaviour
         SwitchButtonState(restartButton, false);
         SwitchButtonState(backButton, false);
         SwitchButtonState(exitButton, false);
-        Time.timeScale = 1;
+   
+        Time.timeScale = tmSc;
+        
         EventSystem.current.SetSelectedGameObject(null);
     }
 
@@ -55,5 +63,10 @@ public class PauseMenu : MonoBehaviour
         button.enabled = state;
         button.image.enabled = state;
         button.GetComponentInChildren<Text>().enabled = state;
+    }
+
+    private void irMenuPrinc()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }
