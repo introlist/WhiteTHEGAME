@@ -26,6 +26,15 @@ public class MovementPlayer : MonoBehaviour
     int lvl = 1;
     int nextLevelExp;
     int status = 1;
+    public AudioSource lvlup;
+    public AudioSource grab;
+    public AudioSource fight;
+    public AudioSource end;
+    public AudioSource death;
+    public AudioSource obst;
+    public AudioSource tensiona;
+    public AudioSource chase2;
+    
 
     void Start()
     {
@@ -36,6 +45,48 @@ public class MovementPlayer : MonoBehaviour
         animator = this.GetComponent<Animator>();
         animator.SetInteger("Emocion", 0);
 
+
+        chase2 = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip chaseClip = Resources.Load<AudioClip>("Chase2");
+        chase2.clip = chaseClip;
+        chase2.loop = true;
+
+        grab = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip grabClip  = Resources.Load<AudioClip>("Food");
+        grab.clip = grabClip;
+        grab.loop = false;
+
+        obst = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip obstClip = Resources.Load<AudioClip>("Obst");
+        obst.clip = obstClip;
+        obst.loop = false;
+
+        death = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip deathClip = Resources.Load<AudioClip>("GameOver");
+        death.clip = deathClip;
+        death.loop = false;
+
+        fight = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip fightClip = Resources.Load<AudioClip>("Figth");
+        fight.clip = fightClip;
+        fight.loop = false;
+
+        end = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip endClip = Resources.Load<AudioClip>("End");
+        end.clip = endClip;
+        end.loop = false;
+
+        lvlup = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip lvlClip = Resources.Load<AudioClip>("LVL");
+        lvlup.clip = grabClip;
+        lvlup.loop = false;
+
+        tensiona = gameObject.AddComponent<AudioSource>() as AudioSource;
+        AudioClip tensClip = Resources.Load<AudioClip>("tension");
+        tensiona.clip = tensClip;
+        tensiona.loop = true;
+
+        chase2.Play();
     }
   
         
@@ -53,7 +104,8 @@ public class MovementPlayer : MonoBehaviour
             gameStatus.color = Color.red;
             gameStatus.text = "YOU ARE DEAD";
             expUI.text = "LVL: " + lvl + " + EXP: " + exp;
-
+            chase2.Stop();
+            death.Play();
 
         }
         else
@@ -190,14 +242,18 @@ public class MovementPlayer : MonoBehaviour
         }
         if (collision.gameObject.tag == "Finish")
         {
+            end.Play();
+            chase2.Stop();
             Time.timeScale = 0;
             gameStatus.color = Color.white;
             gameStatus.text = "YOU WIN";
             expUI.text = "LVL: " + lvl + " + EXP: " + exp;
+            tensiona.Play();
 
         }
         if (collision.gameObject.tag == "Enemy")
         {
+            fight.Play();
             status = 3;
             StartCoroutine(hurt());
             vida = vida - ((int)MAXvida/5 ) + 1;
@@ -214,11 +270,13 @@ public class MovementPlayer : MonoBehaviour
 
         if (collision.gameObject.tag == "Obstacle")
         {
+            obst.Play();
             takeoffed = false;
             actualSpeed = normalSpeed / 5;
         }
         if (collision.gameObject.tag == "Food")
         {
+            grab.Play();
             Destroy(collision.gameObject);
             vida = vida + MAXvida / 3;
             if (vida > MAXvida)
@@ -247,6 +305,7 @@ public class MovementPlayer : MonoBehaviour
             Debug.Log("MAXENERGY + "+ (((int)Mathf.Log(lvl+1)) * 35));
             MAXvida = MAXvida + ((lvl + (int)Mathf.Log(lvl)) * 15);
             vida = MAXvida;
+            lvlup.Play();
         }
     }
 
